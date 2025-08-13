@@ -1,0 +1,73 @@
+{
+  "kind": "collectionType",
+  "collectionName": "partners",
+  "info": {
+    "singularName": "partner",
+    "pluralName": "partners",
+    "displayName": "Partner",
+    "description": "Business partners and organizational alliances"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "uid": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true,
+      "unique": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "logo": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false,
+      "required": true
+    },
+    "link": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "technology",
+        "education",
+        "finance",
+        "nonprofit",
+        "government",
+        "healthcare"
+      ],
+      "required": true
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": ["unpublished", "published"],
+      "required": true,
+      "default": "unpublished"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "display_order": {
+      "type": "integer"
+    },
+    "created_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

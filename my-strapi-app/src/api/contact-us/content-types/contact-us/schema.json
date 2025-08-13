@@ -1,0 +1,71 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contact_us",
+  "info": {
+    "singularName": "contact-us",
+    "pluralName": "contact-us-entries",
+    "displayName": "Contact Us",
+    "description": "Contact information and office locations with rich address formatting"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "uid": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "unique": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "logo": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false,
+      "required": true
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "corporate",
+        "branch", 
+        "support",
+        "regional"
+      ],
+      "required": true
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": ["unpublished", "published", "archived"],
+      "required": true,
+      "default": "unpublished"
+    },
+    "address": {
+      "type": "richtext",
+      "required": true
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "display_order": {
+      "type": "integer"
+    },
+    "created_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

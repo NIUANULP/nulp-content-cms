@@ -1,0 +1,93 @@
+{
+  "kind": "collectionType",
+  "collectionName": "menus",
+  "info": {
+    "singularName": "menu",
+    "pluralName": "menus",
+    "displayName": "Menu",
+    "description": "Manage site menus with hierarchical structure and flexible navigation"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "uid": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "unique": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "menu_type": {
+      "type": "enumeration",
+      "enum": ["Internal", "External"],
+      "required": true
+    },
+    "link": {
+      "type": "string",
+      "required": true
+    },
+    "target_window": {
+      "type": "enumeration",
+      "enum": ["parent", "new_window"],
+      "required": true,
+      "default": "parent"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": ["Main Menu", "Footer Menu", "Sidebar Menu"],
+      "required": true
+    },
+    "parent_menu": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::menu.menu"
+    },
+    "child_menus": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::menu.menu",
+      "mappedBy": "parent_menu"
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": ["unpublished", "published", "archived"],
+      "required": true,
+      "default": "unpublished"
+    },
+    "start_publish_date": {
+      "type": "datetime"
+    },
+    "end_publish_date": {
+      "type": "datetime"
+    },
+    "link_image": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "display_order": {
+      "type": "integer"
+    },
+    "created_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

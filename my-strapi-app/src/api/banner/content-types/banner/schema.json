@@ -1,0 +1,73 @@
+{
+  "kind": "collectionType",
+  "collectionName": "banners",
+  "info": {
+    "singularName": "banner",
+    "pluralName": "banners",
+    "displayName": "Banner",
+    "description": "Site banner management with rich content and media integration"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "uid": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true,
+      "unique": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": ["unpublished", "published", "archived"],
+      "required": true,
+      "default": "unpublished"
+    },
+    "start_publish_date": {
+      "type": "datetime"
+    },
+    "end_publish_date": {
+      "type": "datetime"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "required": true
+    },
+    "background_image": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false,
+      "required": true
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "display_order": {
+      "type": "integer"
+    },
+    "created_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

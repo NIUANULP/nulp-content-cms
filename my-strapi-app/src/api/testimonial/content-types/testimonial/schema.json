@@ -1,0 +1,68 @@
+{
+  "kind": "collectionType",
+  "collectionName": "testimonials",
+  "info": {
+    "singularName": "testimonial",
+    "pluralName": "testimonials",
+    "displayName": "Testimonial",
+    "description": "User testimonials with rich content and category-based organization"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "uid": {
+      "type": "uid",
+      "targetField": "user_name",
+      "required": true,
+      "unique": true
+    },
+    "user_name": {
+      "type": "string",
+      "required": true
+    },
+    "user_details": {
+      "type": "string",
+      "required": true
+    },
+    "testimonial": {
+      "type": "richtext",
+      "required": true
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": ["unpublished", "published", "archived"],
+      "required": true,
+      "default": "unpublished"
+    },
+    "start_publish_date": {
+      "type": "datetime"
+    },
+    "end_publish_date": {
+      "type": "datetime"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "required": true
+    },
+    "thumbnail": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false,
+      "required": true
+    },
+    "created_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    }
+  }
+}

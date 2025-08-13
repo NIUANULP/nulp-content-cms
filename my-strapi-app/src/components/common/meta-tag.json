@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_common_meta_tags",
+  "info": {
+    "displayName": "Meta Tag",
+    "description": "Reusable meta tag component for tagging content"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "string",
+      "required": false
+    }
+  }
+}

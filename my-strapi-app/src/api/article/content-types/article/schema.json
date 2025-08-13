@@ -1,0 +1,73 @@
+{
+  "kind": "collectionType",
+  "collectionName": "articles",
+  "info": {
+    "singularName": "article",
+    "pluralName": "articles",
+    "displayName": "Article",
+    "description": "Article management with WYSIWYG content editor, categorization and publishing workflow"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "uid": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": ["unpublished", "published", "archived"],
+      "required": true,
+      "default": "unpublished"
+    },
+    "start_publish_date": {
+      "type": "datetime"
+    },
+    "end_publish_date": {
+      "type": "datetime"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "required": true
+    },
+    "thumbnail": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::media-asset.media-asset",
+      "required": true
+    },
+    "created_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "is_deleted": {
+      "type": "boolean",
+      "default": false
+    },
+    "tags": {
+      "type": "component",
+      "repeatable": true,
+      "component": "common.meta-tag"
+    }
+  }
+}

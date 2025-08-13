@@ -1,0 +1,65 @@
+{
+  "kind": "collectionType",
+  "collectionName": "social_media",
+  "info": {
+    "singularName": "social-media",
+    "pluralName": "social-medias",
+    "displayName": "Social Media",
+    "description": "Social media platforms and links with categorization and ordering"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "uid": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "unique": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "logo": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false,
+      "required": true
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "general",
+        "footer",
+        "header",
+        "sidebar"
+      ],
+      "required": true
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": ["unpublished", "published", "archived"],
+      "required": true,
+      "default": "unpublished"
+    },
+    "link": {
+      "type": "string",
+      "required": true
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "display_order": {
+      "type": "integer"
+    },
+    "created_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

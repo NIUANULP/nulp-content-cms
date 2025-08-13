@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_sunbird_sunbird_doids",
+  "info": {
+    "displayName": "Sunbird DO ID",
+    "description": "Component for storing Sunbird Digital Object Identifiers"
+  },
+  "options": {},
+  "attributes": {
+    "do_id": {
+      "type": "string",
+      "required": true
+    }
+  }
+}
