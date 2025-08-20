@@ -70,11 +70,10 @@ pipeline {
         stage('Deploy to AKS') {
             steps {
                 sh """
-                  export KUBECONFIG=/var/lib/jenkins/secrets/aks-dev.yaml
+                  export KUBECONFIG=/var/lib/jenkins/secrets/dev_k8s.yaml
                   # Replace image tag in deployment.yaml before applying
                   sed -i 's#niuasunbird/strapi:5.20v4#${IMAGE_NAME}:${IMAGE_TAG}#' k8s/deploy.yaml
-                  #kubectl apply -f k8s/deploy.yaml -n dev
-                  #kubectl -n ${KUBE_NAMESPACE} rollout status deployment/strapi
+
                 """
             }
         }
