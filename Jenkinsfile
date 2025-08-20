@@ -40,8 +40,8 @@ pipeline {
                   export KUBECONFIG=\$(pwd)/k8s.yaml
                   # Replace image tag in deployment.yaml before applying
                   sed -i 's#niuasunbird/strapi:5.20v4#${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}#' k8s/deployment.yaml
-                  kubectl apply -f k8s/deployment.yaml
-                  kubectl -n ${KUBE_NAMESPACE} rollout status deployment/strapi
+                  #kubectl apply -f k8s/deployment.yaml
+                  #kubectl -n ${KUBE_NAMESPACE} rollout status deployment/strapi
                 """
             }
         }
