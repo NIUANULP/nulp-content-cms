@@ -72,7 +72,7 @@ pipeline {
                 sh """
                   export KUBECONFIG=/var/lib/jenkins/secrets/aks-dev.yaml
                   # Replace image tag in deployment.yaml before applying
-                  sed -i 's#niuasunbird/strapi:5.20v4#${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}#' k8s/deploy.yaml
+                  sed -i 's#niuasunbird/strapi:5.20v4#${IMAGE_NAME}:${IMAGE_TAG}#' k8s/deploy.yaml
                   #kubectl apply -f k8s/deploy.yaml -n dev
                   #kubectl -n ${KUBE_NAMESPACE} rollout status deployment/strapi
                 """
