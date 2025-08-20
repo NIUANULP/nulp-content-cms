@@ -32,7 +32,7 @@ pipeline {
             }
         }
 
-        stage('Install Node.js 20.19.4') {
+        stage('Pre-Build Setup & Run Script') {
             steps {
                 sh '''
                   # Install nvm if not already installed
@@ -42,26 +42,16 @@ pipeline {
 
                   # Load nvm
                   export NVM_DIR="$HOME/.nvm"
-                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
                   # Install and use Node.js 20.19.4
                   nvm install 20.19.4
                   nvm use 20.19.4
 
-                  echo "Node version:"
-                  node -v
-                  echo "NPM version:"
-                  npm -v
-                '''
-            }
-        }
+                  echo "Using Node.js version: $(node -v)"
+                  echo "Using npm version: $(npm -v)"
 
-        stage('Run Pre-Build Script') {
-            steps {
-                sh '''
-                  export NVM_DIR="$HOME/.nvm"
-                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-                  nvm use 20.19.4
+                  # Run pre-build script
                   chmod +x ./script.sh
                   ./script.sh
                 '''
