@@ -37,8 +37,8 @@ pipeline {
 
         stage('Run Pre-Build Script') {
             steps {
-                sh 'chmod +x ./my-strapi-app/script.sh'
-                sh './my-strapi-app/script.sh'
+                sh 'chmod +x ./script.sh'
+                sh './script.sh'
             }
         }
 
