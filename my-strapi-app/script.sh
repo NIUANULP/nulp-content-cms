@@ -854,10 +854,10 @@ echo "  ✅ Sunbird platform integration for educational content"
 echo "  ✅ Flexible categorization across all content types"
 echo ""
 echo "🎓 Perfect for educational platforms like NULP!"
-EOF
+#EOF
 
 # Make the script executable
-chmod +x create-collections.sh
+#chmod +x create-collections.sh
 
 echo "✅ Script created successfully!"
 echo ""
