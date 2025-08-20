@@ -1,71 +1,91 @@
 pipeline {
     agent any
 
-  environment {
-    IMAGE_TAG = "${env.BUILD_NUMBER}"
-    PREV_BUILD = "${env.BUILD_NUMBER.toInteger() - 1}"
-    REGISTRY = "docker.io"
-  }
-
-  stages {
-
-    stage('Load Config from Credentials') {
-      steps {
-        withCredentials([
-          string(credentialsId: 'docker-strapi-image', variable: 'IMAGE_NAME'),
-          string(credentialsId: 'git-user', variable: 'GIT_USER')
-        ]) {
-          script {
-            env.IMAGE_NAME   = IMAGE_NAME
-            env.GIT_USER     = GIT_USER
-          }
-        }
-      }
+    environment {
+        IMAGE_TAG   = "${env.BUILD_NUMBER}"
+        PREV_BUILD  = "${env.BUILD_NUMBER.toInteger() - 1}"
+        REGISTRY    = "docker.io"
     }
 
+    stages {
 
-    stage('Cleanup Previous strapi Image') {
-      steps {
-        sh '''
-          echo "Attempting to remove previous image: ${IMAGE_NAME}:${PREV_BUILD} (if exists)..."
-          docker rmi ${IMAGE_NAME}:${PREV_BUILD} || true
-        '''
-      }
-    }
-
-
-
-        stage('Run Pre-Build Script') {
+        stage('Load Config from Credentials') {
             steps {
-                sh 'chmod +x ./script.sh'
-                sh './script.sh'
+                withCredentials([
+                    string(credentialsId: 'docker-strapi-image', variable: 'IMAGE_NAME'),
+                    string(credentialsId: 'git-user', variable: 'GIT_USER')
+                ]) {
+                    script {
+                        env.IMAGE_NAME = IMAGE_NAME
+                        env.GIT_USER   = GIT_USER
+                    }
+                }
             }
         }
 
-
-
-    stage('Build Docker Image') {
-      steps {
-          sh """
-            docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
-          """
+        stage('Cleanup Previous strapi Image') {
+            steps {
+                sh '''
+                  echo "Attempting to remove previous image: ${IMAGE_NAME}:${PREV_BUILD} (if exists)..."
+                  docker rmi ${IMAGE_NAME}:${PREV_BUILD} || true
+                '''
+            }
         }
-      }
 
+        stage('Install Node.js 20.19.4') {
+            steps {
+                sh '''
+                  # Install nvm if not already installed
+                  if [ ! -d "$HOME/.nvm" ]; then
+                    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+                  fi
 
+                  # Load nvm
+                  export NVM_DIR="$HOME/.nvm"
+                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
+                  # Install and use Node.js 20.19.4
+                  nvm install 20.19.4
+                  nvm use 20.19.4
 
-    stage('Push to Docker Hub') {
-      steps {
-        withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-          sh """
-            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-            docker push ${IMAGE_NAME}:${IMAGE_TAG}
-          """
+                  echo "Node version:"
+                  node -v
+                  echo "NPM version:"
+                  npm -v
+                '''
+            }
         }
-      }
-    }
 
+        stage('Run Pre-Build Script') {
+            steps {
+                sh '''
+                  export NVM_DIR="$HOME/.nvm"
+                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                  nvm use 20.19.4
+                  chmod +x ./script.sh
+                  ./script.sh
+                '''
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh """
+                  docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                """
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh """
+                      echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                      docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
 
         stage('Deploy to AKS') {
             steps {

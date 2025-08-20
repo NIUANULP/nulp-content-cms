@@ -7,6 +7,13 @@ set -e
 
 echo "🚀 Creating NULP Strapi Collections and Components..."
 echo "=============================================="
+
+echo "Installing @_sh/strapi-plugin-ckeditor..."
+npm i @_sh/strapi-plugin-ckeditor
+echo "Installing pg..."
+npm install pg --save
+echo "Installing strapi-plugin-tagsinput..."
+npm i strapi-plugin-tagsinput
 # Create base directories
 echo "📁 Creating directory structure..."
 
@@ -1350,12 +1357,7 @@ echo "✅ All controllers, routes, and services created"
 echo "🔧 Generating TypeScript types..."
 npm run strapi ts:generate-types
 
-echo "Installing @_sh/strapi-plugin-ckeditor..."
-npm i @_sh/strapi-plugin-ckeditor
-echo "Installing pg..."
-npm install pg --save
-echo "Installing strapi-plugin-tagsinput..."
-npm i strapi-plugin-tagsinput
+
 
 echo ""
 echo "🎉 SUCCESS! All NULP Strapi collections have been created!"
