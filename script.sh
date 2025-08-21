@@ -14,6 +14,8 @@ echo "Installing pg..."
 npm install pg --save
 echo "Installing strapi-plugin-tagsinput..."
 npm i strapi-plugin-tagsinput
+echo "Installing strapi-plugin-api-select...."
+npm i strapi-plugin-api-select
 # Create base directories
 echo "📁 Creating directory structure..."
 
@@ -498,6 +500,33 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
     "tags": {
       "type": "customField",
       "customField": "plugin::tagsinput.tags"
+    },
+    "Courses": {
+      "type": "customField",
+      "customField": "plugin::custom-strapi-select.custom-strapi-select",
+      "options": {
+        "optionLabelKey": "name",
+        "optionValueKey": "identifier",
+        "selectMode": "multiple",
+        "authMode": "public",
+        "optionsApi": "https://nulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
+        "httpMethod": "POST",
+        "requestPayload": "{\n    \"request\": {\n        \"filters\": {\n            \"status\": [\n                \"Live\"\n            ],\n            \"primaryCategory\": [\n                \"Course\"\n            ],\n            \"visibility\": []\n        },\n        \"limit\": 50,\n        \"sort_by\": {\n            \"lastPublishedOn\": \"desc\"\n        },\n        \"fields\": [\n            \"name\",\n            \n          \n            \"primaryCategory\",\n            \"status\",\n            \"lastUpdatedAt\",\n             \"lastPublishedOn\"\n        ],\n        \"facets\": [\n            \"channel\",\n            \"gradeLevel\",\n            \"subject\",\n            \"medium\"\n        ],\n        \"offset\": 0\n    }\n}",
+        "responseDataPath": "result.content"
+      }
+    },
+    "discussion": {
+      "type": "customField",
+      "customField": "plugin::custom-strapi-select.custom-strapi-select",
+      "options": {
+        "optionLabelKey": "title",
+        "optionValueKey": "slug",
+        "selectMode": "multiple",
+        "authMode": "public",
+        "httpMethod": "GET",
+        "optionsApi": "https://devnulp.niua.org/discussion-forum/api/popular",
+        "responseDataPath": ""
+      }
     }
   }
 }
