@@ -8,6 +8,8 @@ set -e
 echo "🚀 Creating NULP Strapi Collections and Components..."
 echo "=============================================="
 
+echo "Installing strapi-plugin-api-select"
+npm i strapi-plugin-api-select
 echo "Installing @_sh/strapi-plugin-ckeditor..."
 npm i @_sh/strapi-plugin-ckeditor
 echo "Installing pg..."
@@ -498,6 +500,32 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
     "tags": {
       "type": "customField",
       "customField": "plugin::tagsinput.tags"
+    },
+    "trending_courses": {
+      "type": "customField",
+      "customField": "plugin::api-select.api-select",
+      "options": {
+        "optionLabelKey": "name",
+        "optionValueKey": "identifier",
+        "selectMode": "multiple",
+        "authMode": "public",
+        "httpMethod": "POST",
+        "optionsApi": "https://nulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
+        "requestPayload": "{\n    \"request\": {\n        \"filters\": {\n            \"status\": [\n                \"Live\"\n            ],\n            \"primaryCategory\": [\n                \"Course\"\n            ],\n            \"visibility\": []\n        },\n        \"limit\": 50,\n        \"sort_by\": {\n            \"lastPublishedOn\": \"desc\"\n        },\n        \"fields\": [\n            \"name\",\n            \n          \n            \"primaryCategory\",\n            \"status\",\n            \"lastUpdatedAt\",\n             \"lastPublishedOn\"\n        ],\n        \"facets\": [\n            \"channel\",\n            \"gradeLevel\",\n            \"subject\",\n            \"medium\"\n        ],\n        \"offset\": 0\n    }\n}",
+        "responseDataPath": "result.content"
+      }
+    },
+    "trending_discussions": {
+      "type": "customField",
+      "customField": "plugin::api-select.api-select",
+      "options": {
+        "optionLabelKey": "title",
+        "optionValueKey": "slug",
+        "selectMode": "multiple",
+        "authMode": "public",
+        "optionsApi": "https://devnulp.niua.org/discussion-forum/api/popular",
+         "responseDataPath": "topics"
+      }
     }
   }
 }
