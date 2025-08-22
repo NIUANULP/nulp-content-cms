@@ -501,7 +501,7 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
       "type": "customField",
       "customField": "plugin::tagsinput.tags"
     },
-    "courses": {
+    "trending_courses": {
       "type": "customField",
       "customField": "plugin::api-select.api-select",
       "options": {
@@ -515,7 +515,7 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
         "responseDataPath": "result.content"
       }
     },
-    "discussion": {
+    "trending_discussions": {
       "type": "customField",
       "customField": "plugin::api-select.api-select",
       "options": {
@@ -523,7 +523,7 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
         "optionValueKey": "slug",
         "selectMode": "multiple",
         "authMode": "public",
-        "optionsApi": "https://nulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
+        "optionsApi": "https://devnulp.niua.org/discussion-forum/api/popular",
       }
     }
   }
