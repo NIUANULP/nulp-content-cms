@@ -34,5 +34,5 @@ COPY --from=builder /srv/app ./
 
 ENV NODE_ENV=development
 
-CMD ["npm", "start"]
+CMD ["npm", "develop"]
 
