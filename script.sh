@@ -524,6 +524,7 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
         "selectMode": "multiple",
         "authMode": "public",
         "optionsApi": "https://devnulp.niua.org/discussion-forum/api/popular",
+         "responseDataPath": "topics"
       }
     }
   }
