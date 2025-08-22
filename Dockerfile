@@ -32,7 +32,7 @@ RUN npm install pg --save && \
 # Copy build artifacts and source code from builder
 COPY --from=builder /srv/app ./
 
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 
 CMD ["npm", "start"]
 
