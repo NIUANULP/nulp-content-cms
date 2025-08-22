@@ -34,9 +34,9 @@ RUN npm install pg --save && \
 COPY --from=builder /srv/app ./
 
 # Explicitly set environment
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 
 # Define dev script so CMD works
 # (package.json should have "develop": "strapi start")
-CMD ["npm", "run", "develop"]
+CMD ["npm", "start"]
 
