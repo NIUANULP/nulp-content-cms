@@ -13,7 +13,8 @@ RUN npm install pg --save && \
 # Copy rest of the app
 COPY ./ ./
 
-# Build the Strapi app
+# Build the Strapi app in DEV mode
+ENV NODE_ENV=development
 RUN npm run build
 
 
@@ -22,17 +23,20 @@ FROM naskio/strapi:5.20.0-alpine
 
 WORKDIR /srv/app
 
-# Copy only built app + production deps
+# Copy only package.json files first
 COPY package*.json ./
 
-# Install only production dependencies
+# Install only production deps (if you really want dev mode, skip --production)
 RUN npm install pg --save && \
-    npm install --production
+    npm install
 
-# Copy build artifacts and source code from builder
+# Copy built app and source
 COPY --from=builder /srv/app ./
 
+# Explicitly set environment
 ENV NODE_ENV=production
 
+# Define dev script so CMD works
+# (package.json should have "develop": "strapi start")
 CMD ["npm", "start"]
 
