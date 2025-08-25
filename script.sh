@@ -16,6 +16,8 @@ echo "Installing pg..."
 npm install pg --save
 echo "Installing strapi-plugin-tagsinput..."
 npm i strapi-plugin-tagsinput
+echo "Installing strapi-provider-upload-azure-storage..."
+npm i strapi-provider-upload-azure-storage
 # Create base directories
 echo "📁 Creating directory structure..."
 
