@@ -123,15 +123,15 @@ cat > src/api/category/content-types/category/schema.json << 'EOF'
   },
   "pluginOptions": {},
   "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
     "slug": {
       "type": "uid",
       "targetField": "name",
       "required": true,
       "unique": true
-    },
-    "name": {
-      "type": "string",
-      "required": true
     },
     "description": {
       "type": "customField",
@@ -143,8 +143,8 @@ cat > src/api/category/content-types/category/schema.json << 'EOF'
     },
     "state": {
       "type": "enumeration",
-      "enum": ["unpublished", "published"],
-      "default": "unpublished",
+      "enum": ["Published", "Unpublished", "Archived"],
+      "default": "Unpublished",
       "required": true
     },
     "parent": {
@@ -196,7 +196,7 @@ cat > src/api/stack/content-types/stack/schema.json << 'EOF'
     },
     "mode": {
       "type": "enumeration",
-      "enum": ["dynamic", "custom"],
+      "enum": ["Dynamic", "Custom"],
       "required": true
     },
     "enter_count": {
@@ -208,7 +208,7 @@ cat > src/api/stack/content-types/stack/schema.json << 'EOF'
             {
               "var": "mode"
             },
-            "custom"
+            "Custom"
           ]
         },
         "required": {
@@ -216,16 +216,34 @@ cat > src/api/stack/content-types/stack/schema.json << 'EOF'
             {
               "var": "mode"
             },
-            "custom"
+            "Custom"
           ]
         }
       }
     },
     "state": {
       "type": "enumeration",
-      "enum": ["unpublished", "published"],
+      "enum": ["Published", "Unpublished", "Archived"],
       "required": true,
-      "default": "unpublished"
+      "default": "Unpublished"
+    },
+     "dynamic_content": {
+      "type": "enumeration",
+      "required": true,
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "mode"
+            },
+            "Dynamic"
+          ]
+        }
+      },
+      "enum": [
+        "Members",
+        "Domain"
+      ]
     }
   }
 }
@@ -424,11 +442,11 @@ cat > src/api/media/content-types/media/schema.json << 'EOF'
     "display_end_date": {
       "type": "datetime"
     },
-    "status": {
+    "state": {
       "type": "enumeration",
-      "enum": ["Published", "Draft", "Archived"],
+      "enum": ["Published", "Unpublished", "Archived"],
       "required": true,
-      "default": "Draft"
+      "default": "Unpublished"
     }
   }
 }
@@ -470,9 +488,9 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
     },
     "state": {
       "type": "enumeration",
-      "enum": ["unpublished", "published", "archived"],
+      "enum": ["Published", "Unpublished", "Archived"],
       "required": true,
-      "default": "unpublished"
+      "default": "Unpublished"
     },
     "start_publish_date": {
       "type": "datetime"
@@ -492,40 +510,9 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
       "multiple": false,
       "required": true
     },
-
-    "is_deleted": {
-      "type": "boolean",
-      "default": false
-    },
     "tags": {
       "type": "customField",
       "customField": "plugin::tagsinput.tags"
-    },
-    "trending_courses": {
-      "type": "customField",
-      "customField": "plugin::api-select.api-select",
-      "options": {
-        "optionLabelKey": "name",
-        "optionValueKey": "identifier",
-        "selectMode": "multiple",
-        "authMode": "public",
-        "httpMethod": "POST",
-        "optionsApi": "https://nulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
-        "requestPayload": "{\n    \"request\": {\n        \"filters\": {\n            \"status\": [\n                \"Live\"\n            ],\n            \"primaryCategory\": [\n                \"Course\"\n            ],\n            \"visibility\": []\n        },\n        \"limit\": 50,\n        \"sort_by\": {\n            \"lastPublishedOn\": \"desc\"\n        },\n        \"fields\": [\n            \"name\",\n            \n          \n            \"primaryCategory\",\n            \"status\",\n            \"lastUpdatedAt\",\n             \"lastPublishedOn\"\n        ],\n        \"facets\": [\n            \"channel\",\n            \"gradeLevel\",\n            \"subject\",\n            \"medium\"\n        ],\n        \"offset\": 0\n    }\n}",
-        "responseDataPath": "result.content"
-      }
-    },
-    "trending_discussions": {
-      "type": "customField",
-      "customField": "plugin::api-select.api-select",
-      "options": {
-        "optionLabelKey": "title",
-        "optionValueKey": "slug",
-        "selectMode": "multiple",
-        "authMode": "public",
-        "optionsApi": "https://devnulp.niua.org/discussion-forum/api/popular",
-         "responseDataPath": "topics"
-      }
     }
   }
 }
@@ -568,9 +555,9 @@ cat > src/api/menu/content-types/menu/schema.json << 'EOF'
     },
     "target_window": {
       "type": "enumeration",
-      "enum": ["parent", "new_window"],
+      "enum": ["Parent", "New_Window"],
       "required": true,
-      "default": "parent"
+      "default": "Parent"
     },
     "category": {
       "type": "relation",
@@ -591,9 +578,9 @@ cat > src/api/menu/content-types/menu/schema.json << 'EOF'
     },
     "state": {
       "type": "enumeration",
-      "enum": ["unpublished", "published", "archived"],
+      "enum": ["Published", "Unpublished", "Archived"],
       "required": true,
-      "default": "unpublished"
+      "default": "Unpublished"
     },
     "start_publish_date": {
       "type": "datetime"
@@ -656,15 +643,29 @@ cat > src/api/banner/content-types/banner/schema.json << 'EOF'
     },
     "state": {
       "type": "enumeration",
-      "enum": ["unpublished", "published", "archived"],
+      "enum": ["Published", "Unpublished", "Archived"],
       "required": true,
-      "default": "unpublished"
+      "default": "Unpublished"
     },
     "start_publish_date": {
       "type": "datetime"
     },
     "end_publish_date": {
       "type": "datetime"
+    },
+    "target_url": {
+      "type": "string",
+      "required": false
+    },
+    "target_window": {
+      "type": "enumeration",
+      "enum": ["Parent", "New_window"],
+      "required": false,
+      "default": "Parent"
+    },
+    "button_text": {
+      "type": "string",
+      "required": false
     },
     "category": {
       "type": "relation",
@@ -726,9 +727,9 @@ cat > src/api/testimonial/content-types/testimonial/schema.json << 'EOF'
     },
     "state": {
       "type": "enumeration",
-      "enum": ["unpublished", "published", "archived"],
+      "enum": ["Published", "Unpublished", "Archived"],
       "required": true,
-      "default": "unpublished"
+      "default": "Unpublished"
     },
     "start_publish_date": {
       "type": "datetime"
@@ -802,9 +803,9 @@ cat > src/api/partner/content-types/partner/schema.json << 'EOF'
     },
     "state": {
       "type": "enumeration",
-      "enum": ["unpublished", "published"],
+      "enum": ["Published", "Unpublished", "Archived"],
       "required": true,
-      "default": "unpublished"
+      "default": "Unpublished"
     },
     "is_active": {
       "type": "boolean",
@@ -860,9 +861,9 @@ cat > src/api/contact-us/content-types/contact-us/schema.json << 'EOF'
     },
     "state": {
       "type": "enumeration",
-      "enum": ["unpublished", "published", "archived"],
+      "enum": ["Published", "Unpublished", "Archived"],
       "required": true,
-      "default": "unpublished"
+      "default": "Unpublished"
     },
     "address": {
       "type": "customField",
@@ -932,9 +933,9 @@ cat > src/api/social-media/content-types/social-media/schema.json << 'EOF'
     },
     "state": {
       "type": "enumeration",
-      "enum": ["unpublished", "published", "archived"],
+      "enum": ["Published", "Unpublished", "Archived"],
       "required": true,
-      "default": "unpublished"
+      "default": "Unpublished"
     },
     "link": {
       "type": "string",
@@ -977,7 +978,7 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
     },
     "mode": {
       "type": "enumeration",
-      "enum": ["dynamic", "custom"],
+      "enum": ["Dynamic", "Select_Course", "Select_Good_Practices", "Select_Discussion"],
       "required": true
     },
     "category": {
@@ -985,21 +986,6 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
       "relation": "manyToOne",
       "target": "api::category.category",
       "required": true
-    },
-    "add_content_ids": {
-      "type": "component",
-      "conditions": {
-        "visible": {
-          "==": [
-            {
-              "var": "mode"
-            },
-            "custom"
-          ]
-        }
-      },
-      "component": "common.content-id",
-      "repeatable": true
     },
     "sort_field": {
       "type": "enumeration",
@@ -1009,11 +995,11 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
             {
               "var": "mode"
             },
-            "dynamic"
+            "Dynamic"
           ]
         }
       },
-      "enum": ["createdOn", "updatedOn"]
+      "enum": ["CreatedOn", "UpdatedOn"]
     },
     "sort_order": {
       "type": "enumeration",
@@ -1023,11 +1009,87 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
             {
               "var": "mode"
             },
-            "dynamic"
+            "Dynamic"
           ]
         }
       },
       "enum": ["ASC", "DESC"]
+    },
+    "trending_courses": {
+      "type": "customField",
+      "customField": "plugin::api-select.api-select",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "mode"
+            },
+            "Select_Course"
+          ]
+        }
+      },
+      "options": {
+        "optionLabelKey": "name",
+        "optionValueKey": "identifier",
+        "selectMode": "multiple",
+        "authMode": "public",
+        "httpMethod": "POST",
+        "optionsApi": "https://nulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
+        "requestPayload": "{\n    \"request\": {\n        \"filters\": {\n            \"status\": [\n                \"Live\"\n            ],\n            \"primaryCategory\": [\n                \"Course\"\n            ],\n            \"visibility\": []\n        },\n        \"limit\": 50,\n        \"sort_by\": {\n            \"lastPublishedOn\": \"desc\"\n        },\n        \"fields\": [\n            \"name\",\n            \"identifier\",\n            \"primaryCategory\",\n            \"status\",\n            \"lastUpdatedAt\",\n            \"lastPublishedOn\"\n        ],\n        \"facets\": [\n            \"channel\",\n            \"gradeLevel\",\n            \"subject\",\n            \"medium\"\n        ],\n        \"offset\": 0\n    }\n}",
+        "responseDataPath": "result.content"
+      }
+    },
+      "trending_good_practices": {
+      "type": "customField",
+      "customField": "plugin::api-select.api-select",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "mode"
+            },
+            "Select_Good_Practices"
+          ]
+        }
+      },
+      "options": {
+        "optionLabelKey": "name",
+        "optionValueKey": "identifier",
+        "selectMode": "multiple",
+        "authMode": "public",
+        "httpMethod": "POST",
+        "optionsApi": "https://nulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
+        "requestPayload": "{\n    \"request\": {\n        \"filters\": {\n            \"status\": [\n                \"Live\"\n            ],\n            \"primaryCategory\": [\n                \"Good Practices\"\n            ],\n            \"visibility\": []\n        },\n        \"limit\": 50,\n        \"sort_by\": {\n            \"lastPublishedOn\": \"desc\"\n        },\n        \"fields\": [\n            \"name\",\n            \"identifier\",\n            \"primaryCategory\",\n            \"status\",\n            \"lastUpdatedAt\",\n            \"lastPublishedOn\"\n        ],\n        \"facets\": [\n            \"channel\",\n            \"gradeLevel\",\n            \"subject\",\n            \"medium\"\n        ],\n        \"offset\": 0\n    }\n}",
+        "responseDataPath": "result.content"
+      }
+    },
+    "trending_discussions": {
+      "type": "customField",
+      "customField": "plugin::api-select.api-select",
+       "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "mode"
+            },
+            "Select_Discussion"
+          ]
+        }
+      },
+      "options": {
+        "optionLabelKey": "title",
+        "optionValueKey": "slug",
+        "selectMode": "multiple",
+        "authMode": "public",
+        "optionsApi": "https://nulp.niua.org/discussion-forum/api/popular",
+         "responseDataPath": "topics"
+      }
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": ["published", "unpublished", "archived"],
+      "required": true,
+      "default": "unpublished"
     }
   }
 }
