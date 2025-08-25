@@ -133,14 +133,6 @@ cat > src/api/category/content-types/category/schema.json << 'EOF'
       "required": true,
       "unique": true
     },
-    "description": {
-      "type": "customField",
-      "customField": "plugin::ckeditor5.CKEditor",
-      "options": {
-        "preset": "defaultHtml"
-      },
-      "required": false
-    },
     "state": {
       "type": "enumeration",
       "enum": ["Published", "Unpublished", "Archived"],
@@ -157,6 +149,14 @@ cat > src/api/category/content-types/category/schema.json << 'EOF'
       "relation": "oneToMany",
       "target": "api::category.category",
       "mappedBy": "parent"
+    },
+    "description": {
+      "type": "customField",
+      "customField": "plugin::ckeditor5.CKEditor",
+      "options": {
+        "preset": "defaultHtml"
+      },
+      "required": false
     }
   }
 }
@@ -182,6 +182,12 @@ cat > src/api/stack/content-types/stack/schema.json << 'EOF'
       "type": "string",
       "required": true,
       "maxLength": 255
+    },
+     "state": {
+      "type": "enumeration",
+      "enum": ["Published", "Unpublished", "Archived"],
+      "required": true,
+      "default": "Unpublished"
     },
     "category": {
       "type": "relation",
@@ -221,12 +227,7 @@ cat > src/api/stack/content-types/stack/schema.json << 'EOF'
         }
       }
     },
-    "state": {
-      "type": "enumeration",
-      "enum": ["Published", "Unpublished", "Archived"],
-      "required": true,
-      "default": "Unpublished"
-    },
+   
      "dynamic_content": {
       "type": "enumeration",
       "required": true,
@@ -242,7 +243,7 @@ cat > src/api/stack/content-types/stack/schema.json << 'EOF'
       },
       "enum": [
         "Members",
-        "Domain"
+        "Domains"
       ]
     }
   }
@@ -276,10 +277,11 @@ cat > src/api/media/content-types/media/schema.json << 'EOF'
       "required": true,
       "unique": true
     },
-    "media_type": {
+    "state": {
       "type": "enumeration",
-      "enum": ["Image", "Video"],
-      "required": true
+      "enum": ["Published", "Unpublished", "Archived"],
+      "required": true,
+      "default": "Unpublished"
     },
     "category": {
       "type": "relation",
@@ -287,8 +289,10 @@ cat > src/api/media/content-types/media/schema.json << 'EOF'
       "target": "api::category.category",
       "required": true
     },
-    "description": {
-      "type": "text"
+    "media_type": {
+      "type": "enumeration",
+      "enum": ["Image", "Video"],
+      "required": true
     },
     "upload_image": {
       "type": "media",
@@ -427,6 +431,9 @@ cat > src/api/media/content-types/media/schema.json << 'EOF'
         }
       }
     },
+    "description": {
+      "type": "text"
+    },
     "thumbnail": {
       "type": "media",
       "allowedTypes": ["images"],
@@ -441,12 +448,6 @@ cat > src/api/media/content-types/media/schema.json << 'EOF'
     },
     "display_end_date": {
       "type": "datetime"
-    },
-    "state": {
-      "type": "enumeration",
-      "enum": ["Published", "Unpublished", "Archived"],
-      "required": true,
-      "default": "Unpublished"
     }
   }
 }
@@ -478,6 +479,18 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
       "required": true,
       "unique": true
     },
+    "state": {
+      "type": "enumeration",
+      "enum": ["Published", "Unpublished", "Archived"],
+      "required": true,
+      "default": "Unpublished"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "required": true
+    },
     "content": {
       "type": "customField",
       "customField": "plugin::ckeditor5.CKEditor",
@@ -486,11 +499,9 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
       },
       "required": true
     },
-    "state": {
-      "type": "enumeration",
-      "enum": ["Published", "Unpublished", "Archived"],
-      "required": true,
-      "default": "Unpublished"
+    "tags": {
+      "type": "customField",
+      "customField": "plugin::tagsinput.tags"
     },
     "start_publish_date": {
       "type": "datetime"
@@ -498,21 +509,11 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
     "end_publish_date": {
       "type": "datetime"
     },
-    "category": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::category.category",
-      "required": true
-    },
     "thumbnail": {
       "type": "media",
       "allowedTypes": ["images"],
       "multiple": false,
       "required": true
-    },
-    "tags": {
-      "type": "customField",
-      "customField": "plugin::tagsinput.tags"
     }
   }
 }
@@ -544,6 +545,18 @@ cat > src/api/menu/content-types/menu/schema.json << 'EOF'
       "required": true,
       "unique": true
     },
+    "state": {
+      "type": "enumeration",
+      "enum": ["Published", "Unpublished", "Archived"],
+      "required": true,
+      "default": "Unpublished"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "required": true
+    },
     "menu_type": {
       "type": "enumeration",
       "enum": ["Internal", "External"],
@@ -559,12 +572,6 @@ cat > src/api/menu/content-types/menu/schema.json << 'EOF'
       "required": true,
       "default": "Parent"
     },
-    "category": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::category.category",
-      "required": true
-    },
     "parent_menu": {
       "type": "relation",
       "relation": "manyToOne",
@@ -576,11 +583,15 @@ cat > src/api/menu/content-types/menu/schema.json << 'EOF'
       "target": "api::menu.menu",
       "mappedBy": "parent_menu"
     },
-    "state": {
-      "type": "enumeration",
-      "enum": ["Published", "Unpublished", "Archived"],
+    "display_order": {
+      "type": "integer",
       "required": true,
-      "default": "Unpublished"
+      "unique": true
+    },
+    "link_image": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false
     },
     "start_publish_date": {
       "type": "datetime"
@@ -588,20 +599,10 @@ cat > src/api/menu/content-types/menu/schema.json << 'EOF'
     "end_publish_date": {
       "type": "datetime"
     },
-    "link_image": {
-      "type": "media",
-      "allowedTypes": ["images"],
-      "multiple": false
-    },
     "is_active": {
       "type": "boolean",
       "default": true,
       "required": true
-    },
-    "display_order": {
-      "type": "integer",
-      "required": true,
-      "unique": true
     }
   }
 }
@@ -633,6 +634,18 @@ cat > src/api/banner/content-types/banner/schema.json << 'EOF'
       "required": true,
       "unique": true
     },
+    "state": {
+      "type": "enumeration",
+      "enum": ["Published", "Unpublished", "Archived"],
+      "required": true,
+      "default": "Unpublished"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "required": true
+    },
     "content": {
       "type": "customField",
       "customField": "plugin::ckeditor5.CKEditor",
@@ -641,17 +654,22 @@ cat > src/api/banner/content-types/banner/schema.json << 'EOF'
       },
       "required": true
     },
-    "state": {
-      "type": "enumeration",
-      "enum": ["Published", "Unpublished", "Archived"],
-      "required": true,
-      "default": "Unpublished"
+    "display_order": {
+        "type": "integer",
+        "required": true,
+        "unique": true
     },
     "start_publish_date": {
       "type": "datetime"
     },
     "end_publish_date": {
       "type": "datetime"
+    },
+    "background_image": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false,
+      "required": true
     },
     "target_url": {
       "type": "string",
@@ -667,27 +685,10 @@ cat > src/api/banner/content-types/banner/schema.json << 'EOF'
       "type": "string",
       "required": false
     },
-    "category": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::category.category",
-      "required": true
-    },
-    "background_image": {
-      "type": "media",
-      "allowedTypes": ["images"],
-      "multiple": false,
-      "required": true
-    },
     "is_active": {
       "type": "boolean",
       "default": true,
       "required": true
-    },
-    "display_order": {
-        "type": "integer",
-        "required": true,
-        "unique": true
     }
   }
 }
@@ -731,12 +732,6 @@ cat > src/api/testimonial/content-types/testimonial/schema.json << 'EOF'
       "required": true,
       "default": "Unpublished"
     },
-    "start_publish_date": {
-      "type": "datetime"
-    },
-    "end_publish_date": {
-      "type": "datetime"
-    },
     "category": {
       "type": "relation",
       "relation": "manyToOne",
@@ -749,7 +744,12 @@ cat > src/api/testimonial/content-types/testimonial/schema.json << 'EOF'
       "multiple": false,
       "required": true
     },
-
+    "start_publish_date": {
+      "type": "datetime"
+    },
+    "end_publish_date": {
+      "type": "datetime"
+    },
     "is_active": {
       "type": "boolean",
       "default": true,
@@ -779,27 +779,11 @@ cat > src/api/partner/content-types/partner/schema.json << 'EOF'
       "type": "string",
       "required": true
     },
-    "logo": {
-      "type": "media",
-      "allowedTypes": ["images"],
-      "multiple": false,
-      "required": true
-    },
-    "link": {
-      "type": "string",
-      "required": true
-    },
     "slug": {
       "type": "uid",
       "targetField": "name",
       "required": true,
       "unique": true
-    },
-    "category": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::category.category",
-      "required": true
     },
     "state": {
       "type": "enumeration",
@@ -807,15 +791,31 @@ cat > src/api/partner/content-types/partner/schema.json << 'EOF'
       "required": true,
       "default": "Unpublished"
     },
-    "is_active": {
-      "type": "boolean",
-      "default": true,
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "required": true
+    },
+    "link": {
+      "type": "string",
+      "required": true
+    },
+    "logo": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false,
       "required": true
     },
     "display_order": {
       "type": "integer",
       "required": true,
-      "unique": true,
+      "unique": true
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "required": true
     }
   }
 }
@@ -847,11 +847,11 @@ cat > src/api/contact-us/content-types/contact-us/schema.json << 'EOF'
       "required": true,
       "unique": true
     },
-    "logo": {
-      "type": "media",
-      "allowedTypes": ["images"],
-      "multiple": false,
-      "required": true
+    "state": {
+      "type": "enumeration",
+      "enum": ["Published", "Unpublished", "Archived"],
+      "required": true,
+      "default": "Unpublished"
     },
     "category": {
       "type": "relation",
@@ -859,11 +859,10 @@ cat > src/api/contact-us/content-types/contact-us/schema.json << 'EOF'
       "target": "api::category.category",
       "required": true
     },
-    "state": {
-      "type": "enumeration",
-      "enum": ["Published", "Unpublished", "Archived"],
+    "display_order": {
+      "type": "integer",
       "required": true,
-      "default": "Unpublished"
+      "unique": true
     },
     "address": {
       "type": "customField",
@@ -879,15 +878,16 @@ cat > src/api/contact-us/content-types/contact-us/schema.json << 'EOF'
     "email": {
       "type": "string"
     },
+    "logo": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false,
+      "required": true
+    },
     "is_active": {
       "type": "boolean",
       "default": true,
       "required": true
-    },
-    "display_order": {
-      "type": "integer",
-      "required": true,
-      "unique": true
     }
   }
 }
@@ -909,41 +909,25 @@ cat > src/api/social-media/content-types/social-media/schema.json << 'EOF'
   },
   "pluginOptions": {},
   "attributes": {
-    "title": {
-      "type": "string",
-      "required": true
-    },
-    "slug": {
-      "type": "uid",
-      "targetField": "title",
-      "required": true,
-      "unique": true
-    },
-    "logo": {
-      "type": "media",
-      "allowedTypes": ["images"],
-      "multiple": false,
-      "required": true
-    },
-    "category": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::category.category",
-      "required": true
-    },
-    "state": {
+    "select_social_media": {
       "type": "enumeration",
-      "enum": ["Published", "Unpublished", "Archived"],
-      "required": true,
-      "default": "Unpublished"
+      "enum": [  "WhatsApp","Facebook", "Instagram", "LinkedIn", "YouTube", "X",  "Telegram", "Other"],
+      "required": true
     },
     "link": {
       "type": "string",
       "required": true
     },
-    "is_active": {
-      "type": "boolean",
-      "default": true,
+     "state": {
+      "type": "enumeration",
+      "enum": ["Published", "Unpublished", "Archived"],
+      "required": true,
+      "default": "Unpublished"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
       "required": true
     },
     "display_order": {
@@ -976,6 +960,12 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
       "required": true,
       "maxLength": 255
     },
+     "state": {
+      "type": "enumeration",
+      "enum": ["Published", "Unpublished", "Archived"],
+      "required": true,
+      "default": "Unpublished"
+    },
     "mode": {
       "type": "enumeration",
       "enum": ["Dynamic", "Select_Course", "Select_Good_Practices", "Select_Discussion"],
@@ -986,6 +976,11 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
       "relation": "manyToOne",
       "target": "api::category.category",
       "required": true
+    },
+    "display_order": {
+      "type": "integer",
+      "required": true,
+      "unique": true
     },
     "sort_field": {
       "type": "enumeration",
@@ -1084,12 +1079,6 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
         "optionsApi": "https://nulp.niua.org/discussion-forum/api/popular",
          "responseDataPath": "topics"
       }
-    },
-    "state": {
-      "type": "enumeration",
-      "enum": ["published", "unpublished", "archived"],
-      "required": true,
-      "default": "unpublished"
     }
   }
 }
