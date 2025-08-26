@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: strapi
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: strapi
+  template:
+    metadata:
+      labels:
+        app: strapi
+    spec:
+      containers:
+      - name: strapi
+        image: niuasunbird/strapi:5.20v4
+        ports:
+        - containerPort: 1337
+        envFrom:
+        - configMapRef:
+            name: strapi-config
+        - secretRef:
+            name: strapi-secret
+        volumeMounts:
+        - name: strapi-volume
+          mountPath: /srv/app/public/uploads
+      volumes:
+      - name: strapi-volume
+        persistentVolumeClaim:
+          claimName: strapi-pvc
+
