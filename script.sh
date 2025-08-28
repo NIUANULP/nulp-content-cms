@@ -511,6 +511,11 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
     "end_publish_date": {
       "type": "datetime"
     },
+    "display_order": {
+      "type": "integer",
+      "required": true,
+      "unique": true
+    },
     "thumbnail": {
       "type": "media",
       "allowedTypes": ["images"],
@@ -720,13 +725,55 @@ cat > src/api/testimonial/content-types/testimonial/schema.json << 'EOF'
       "type": "string",
       "required": true
     },
-    "testimonial": {
-      "type": "customField",
-      "customField": "plugin::ckeditor5.CKEditor",
-      "options": {
-        "preset": "defaultHtml"
-      },
+    "mode": {
+      "type": "enumeration",
+      "enum": ["Video", "Text"],
       "required": true
+    },
+    "video_upload": {
+      "type": "media",
+      "allowedTypes": ["videos"],
+      "multiple": false,
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "mode"
+            },
+            "Video"
+          ]
+        },
+        "required": {
+          "==": [
+            {
+              "var": "mode"
+            },
+            "Video"
+          ]
+        }
+      }
+    },
+    "testimonial": {
+      "type": "string",
+      "maxLength": 250,
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "mode"
+            },
+            "Text"
+          ]
+        },
+        "required": {
+          "==": [
+            {
+              "var": "mode"
+            },
+            "Text"
+          ]
+        }
+      }
     },
     "state": {
       "type": "enumeration",
