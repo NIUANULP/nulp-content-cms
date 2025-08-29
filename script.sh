@@ -493,6 +493,12 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
       "target": "api::category.category",
       "required": true
     },
+    "menu": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::menu.menu",
+      "required": false
+    },
     "content": {
       "type": "customField",
       "customField": "plugin::ckeditor5.CKEditor",
@@ -605,11 +611,6 @@ cat > src/api/menu/content-types/menu/schema.json << 'EOF'
     },
     "end_publish_date": {
       "type": "datetime"
-    },
-    "is_active": {
-      "type": "boolean",
-      "default": true,
-      "required": true
     }
   }
 }
@@ -652,6 +653,12 @@ cat > src/api/banner/content-types/banner/schema.json << 'EOF'
       "relation": "manyToOne",
       "target": "api::category.category",
       "required": true
+    },
+    "menu": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::menu.menu",
+      "required": false
     },
     "content": {
       "type": "customField",
