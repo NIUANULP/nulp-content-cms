@@ -297,7 +297,7 @@ cat > src/api/media/content-types/media/schema.json << 'EOF'
     "upload_image": {
       "type": "media",
       "allowedTypes": ["images"],
-      "multiple": false,
+      "multiple": true,
       "conditions": {
         "visible": {
           "==": [
@@ -342,7 +342,7 @@ cat > src/api/media/content-types/media/schema.json << 'EOF'
     "upload_video": {
       "type": "media",
       "allowedTypes": ["videos"],
-      "multiple": false,
+      "multiple": true,
       "conditions": {
         "visible": {
           "and": [
@@ -437,7 +437,7 @@ cat > src/api/media/content-types/media/schema.json << 'EOF'
     "thumbnail": {
       "type": "media",
       "allowedTypes": ["images"],
-      "multiple": false
+      "multiple": true
     },
     "tags": {
       "type": "customField",
