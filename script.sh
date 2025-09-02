@@ -198,9 +198,7 @@ cat > src/api/stack/content-types/stack/schema.json << 'EOF'
       "required": true
     },
     "order": {
-      "type": "integer",
-      "required": true,
-      "min": 1
+      "type": "integer"
     },
     "mode": {
       "type": "enumeration",
@@ -518,9 +516,7 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
       "type": "datetime"
     },
     "display_order": {
-      "type": "integer",
-      "required": true,
-      "unique": true
+      "type": "integer"
     },
     "thumbnail": {
       "type": "media",
@@ -597,9 +593,7 @@ cat > src/api/menu/content-types/menu/schema.json << 'EOF'
       "mappedBy": "parent_menu"
     },
     "display_order": {
-      "type": "integer",
-      "required": true,
-      "unique": true
+      "type": "integer"
     },
     "link_image": {
       "type": "media",
@@ -669,9 +663,7 @@ cat > src/api/banner/content-types/banner/schema.json << 'EOF'
       "required": true
     },
     "display_order": {
-        "type": "integer",
-        "required": true,
-        "unique": true
+        "type": "integer"
     },
     "start_publish_date": {
       "type": "datetime"
@@ -864,9 +856,7 @@ cat > src/api/partner/content-types/partner/schema.json << 'EOF'
       "required": true
     },
     "display_order": {
-      "type": "integer",
-      "required": true,
-      "unique": true
+      "type": "integer"
     },
     "is_active": {
       "type": "boolean",
@@ -916,9 +906,7 @@ cat > src/api/contact-us/content-types/contact-us/schema.json << 'EOF'
       "required": true
     },
     "display_order": {
-      "type": "integer",
-      "required": true,
-      "unique": true
+      "type": "integer"
     },
     "address": {
       "type": "customField",
@@ -987,9 +975,7 @@ cat > src/api/social-media/content-types/social-media/schema.json << 'EOF'
       "required": true
     },
     "display_order": {
-      "type": "integer",
-      "required": true,
-      "unique": true
+      "type": "integer"
     }
   }
 }
@@ -1034,9 +1020,7 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
       "required": true
     },
     "display_order": {
-      "type": "integer",
-      "required": true,
-      "unique": true
+      "type": "integer"
     },
     "sort_field": {
       "type": "enumeration",
