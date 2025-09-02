@@ -518,6 +518,10 @@ cat > src/api/article/content-types/article/schema.json << 'EOF'
     "display_order": {
       "type": "integer"
     },
+    "button_text": {
+      "type": "string",
+      "required": false
+    },
     "thumbnail": {
       "type": "media",
       "allowedTypes": ["images"],
