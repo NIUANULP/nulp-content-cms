@@ -197,6 +197,12 @@ cat > src/api/stack/content-types/stack/schema.json << 'EOF'
       "target": "api::category.category",
       "required": true
     },
+    "menu": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::menu.menu",
+      "required": false
+    },
     "order": {
       "type": "integer"
     },
@@ -288,6 +294,12 @@ cat > src/api/media/content-types/media/schema.json << 'EOF'
       "relation": "manyToOne",
       "target": "api::category.category",
       "required": true
+    },
+    "menu": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::menu.menu",
+      "required": false
     },
     "media_type": {
       "type": "enumeration",
@@ -909,6 +921,12 @@ cat > src/api/contact-us/content-types/contact-us/schema.json << 'EOF'
       "target": "api::category.category",
       "required": true
     },
+    "menu": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::menu.menu",
+      "required": false
+    },
     "display_order": {
       "type": "integer"
     },
@@ -1022,6 +1040,12 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
       "relation": "manyToOne",
       "target": "api::category.category",
       "required": true
+    },
+    "menu": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::menu.menu",
+      "required": false
     },
     "display_order": {
       "type": "integer"
