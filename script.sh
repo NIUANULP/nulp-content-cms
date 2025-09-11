@@ -1030,6 +1030,9 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
       "required": true,
       "default": "Unpublished"
     },
+    "description": {
+      "type": "text"
+    },
     "mode": {
       "type": "enumeration",
       "enum": ["Dynamic", "Select_Course", "Select_Good_Practices", "Select_Discussion"],
@@ -1097,7 +1100,7 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
         "selectMode": "multiple",
         "authMode": "public",
         "httpMethod": "POST",
-        "optionsApi": "https://nulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
+        "optionsApi": "https://devnulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
         "requestPayload": "{\n    \"request\": {\n        \"filters\": {\n            \"status\": [\n                \"Live\"\n            ],\n            \"primaryCategory\": [\n                \"Course\"\n            ],\n            \"visibility\": []\n        },\n        \"limit\": 50,\n        \"sort_by\": {\n            \"lastPublishedOn\": \"desc\"\n        },\n        \"fields\": [\n            \"name\",\n            \"identifier\",\n            \"primaryCategory\",\n            \"status\",\n            \"lastUpdatedAt\",\n            \"lastPublishedOn\"\n        ],\n        \"facets\": [\n            \"channel\",\n            \"gradeLevel\",\n            \"subject\",\n            \"medium\"\n        ],\n        \"offset\": 0\n    }\n}",
         "responseDataPath": "result.content"
       }
@@ -1121,7 +1124,7 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
         "selectMode": "multiple",
         "authMode": "public",
         "httpMethod": "POST",
-        "optionsApi": "https://nulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
+        "optionsApi": "https://devnulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
         "requestPayload": "{\n    \"request\": {\n        \"filters\": {\n            \"status\": [\n                \"Live\"\n            ],\n            \"primaryCategory\": [\n                \"Good Practices\"\n            ],\n            \"visibility\": []\n        },\n        \"limit\": 50,\n        \"sort_by\": {\n            \"lastPublishedOn\": \"desc\"\n        },\n        \"fields\": [\n            \"name\",\n            \"identifier\",\n            \"primaryCategory\",\n            \"status\",\n            \"lastUpdatedAt\",\n            \"lastPublishedOn\"\n        ],\n        \"facets\": [\n            \"channel\",\n            \"gradeLevel\",\n            \"subject\",\n            \"medium\"\n        ],\n        \"offset\": 0\n    }\n}",
         "responseDataPath": "result.content"
       }
@@ -1144,7 +1147,7 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
         "optionValueKey": "slug",
         "selectMode": "multiple",
         "authMode": "public",
-        "optionsApi": "https://nulp.niua.org/discussion-forum/api/popular",
+        "optionsApi": "https://devnulp.niua.org/discussion-forum/api/popular",
          "responseDataPath": "topics"
       }
     }
