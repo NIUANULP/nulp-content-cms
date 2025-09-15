@@ -745,10 +745,14 @@ cat > src/api/testimonial/content-types/testimonial/schema.json << 'EOF'
       "enum": ["Video", "Text"],
       "required": true
     },
-    "video_upload": {
-      "type": "media",
-      "allowedTypes": ["videos"],
-      "multiple": false,
+        "mode": {
+      "type": "enumeration",
+      "enum": ["Video", "Text"],
+      "required": true
+    },
+    "video_source": {
+      "type": "enumeration",
+      "enum": ["Upload Video", "Video Source URL"],
       "conditions": {
         "visible": {
           "==": [
@@ -764,6 +768,98 @@ cat > src/api/testimonial/content-types/testimonial/schema.json << 'EOF'
               "var": "mode"
             },
             "Video"
+          ]
+        }
+      }
+    },
+    "video_upload": {
+      "type": "media",
+      "allowedTypes": ["videos"],
+      "multiple": false,
+      "conditions": {
+        "visible": {
+          "and": [
+            {
+              "==": [
+                {
+                  "var": "mode"
+                },
+                "Video"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "video_source"
+                },
+                "Upload Video"
+              ]
+            }
+          ]
+        },
+        "required": {
+          "and": [
+            {
+              "==": [
+                {
+                  "var": "mode"
+                },
+                "Video"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "video_source"
+                },
+                "Upload Video"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "video_source_url": {
+      "type": "string",
+      "conditions": {
+        "visible": {
+          "and": [
+            {
+              "==": [
+                {
+                  "var": "mode"
+                },
+                "Video"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "video_source"
+                },
+                "Video Source URL"
+              ]
+            }
+          ]
+        },
+        "required": {
+          "and": [
+            {
+              "==": [
+                {
+                  "var": "mode"
+                },
+                "Video"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "video_source"
+                },
+                "Video Source URL"
+              ]
+            }
           ]
         }
       }
