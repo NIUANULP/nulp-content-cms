@@ -944,6 +944,9 @@ cat > src/api/contact-us/content-types/contact-us/schema.json << 'EOF'
     "email": {
       "type": "string"
     },
+    "map_address": {
+      "type": "text"
+    },
     "logo": {
       "type": "media",
       "allowedTypes": ["images"],
