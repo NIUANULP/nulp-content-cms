@@ -1141,9 +1141,7 @@ cat > src/api/course/content-types/course/schema.json << 'EOF'
     "course_status": {
       "type": "enumeration",
       "enum": [
-        "Live",
-        "Draft",
-        "Retire"
+        "Live"
       ]
     },
     "description": {
@@ -1217,9 +1215,7 @@ cat > src/api/good-practice/content-types/good-practice/schema.json << 'EOF'
     "course_status": {
       "type": "enumeration",
       "enum": [
-        "Live",
-        "Draft",
-        "Retire"
+        "Live"
       ]
     },
     "description": {
