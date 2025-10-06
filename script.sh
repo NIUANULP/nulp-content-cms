@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # NULP Strapi Collections Creation Script
-# This script creates all 11 collections and components for the NULP Strapi CMS
+# This script creates all 14 collections and components for the NULP Strapi CMS
 
 set -e
 
@@ -76,6 +76,21 @@ mkdir -p src/api/slider/content-types/slider
 mkdir -p src/api/slider/controllers
 mkdir -p src/api/slider/routes
 mkdir -p src/api/slider/services
+
+mkdir -p src/api/course/content-types/course
+mkdir -p src/api/course/controllers
+mkdir -p src/api/course/routes
+mkdir -p src/api/course/services
+
+mkdir -p src/api/discussion/content-types/discussion
+mkdir -p src/api/discussion/controllers
+mkdir -p src/api/discussion/routes
+mkdir -p src/api/discussion/services
+
+mkdir -p src/api/good-practice/content-types/good-practice
+mkdir -p src/api/good-practice/controllers
+mkdir -p src/api/good-practice/routes
+mkdir -p src/api/good-practice/services
 
 # Components
 mkdir -p src/components/common
@@ -1102,7 +1117,125 @@ cat > src/api/social-media/content-types/social-media/schema.json << 'EOF'
 }
 EOF
 
-# 11. Slider Collection
+# 11. Course Collection
+cat > src/api/course/content-types/course/schema.json << 'EOF'
+{
+  "kind": "collectionType",
+  "collectionName": "courses",
+  "info": {
+    "singularName": "course",
+    "pluralName": "courses",
+    "displayName": "Course"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "identifier": {
+      "type": "uid"
+    },
+    "course_status": {
+      "type": "enumeration",
+      "enum": [
+        "Live",
+        "Draft",
+        "Retire"
+      ]
+    },
+    "description": {
+      "type": "text"
+    },
+    "sliders": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::slider.slider",
+      "mappedBy": "trending_courses"
+    }
+  }
+}
+EOF
+
+# 12. Discussion Collection
+cat > src/api/discussion/content-types/discussion/schema.json << 'EOF'
+{
+  "kind": "collectionType",
+  "collectionName": "discussions",
+  "info": {
+    "singularName": "discussion",
+    "pluralName": "discussions",
+    "displayName": "Discussion"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "tid": {
+      "type": "integer"
+    },
+    "sliders": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::slider.slider",
+      "inversedBy": "trending_discussions"
+    }
+  }
+}
+EOF
+
+# 13. Good Practice Collection
+cat > src/api/good-practice/content-types/good-practice/schema.json << 'EOF'
+{
+  "kind": "collectionType",
+  "collectionName": "good_practices",
+  "info": {
+    "singularName": "good-practice",
+    "pluralName": "good-practices",
+    "displayName": "Good Practice"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "identifier": {
+      "type": "uid"
+    },
+    "course_status": {
+      "type": "enumeration",
+      "enum": [
+        "Live",
+        "Draft",
+        "Retire"
+      ]
+    },
+    "description": {
+      "type": "text"
+    },
+    "sliders": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::slider.slider",
+      "inversedBy": "trending_good_practices"
+    }
+  }
+}
+EOF
+
+# 14. Slider Collection
 cat > src/api/slider/content-types/slider/schema.json << 'EOF'
 {
   "kind": "collectionType",
@@ -1120,34 +1253,41 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
   "attributes": {
     "name": {
       "type": "string",
-      "required": true,
-      "maxLength": 255
+      "maxLength": 255,
+      "required": true
     },
-     "state": {
+    "state": {
       "type": "enumeration",
-      "enum": ["Published", "Unpublished", "Archived"],
       "required": true,
-      "default": "Unpublished"
+      "default": "Unpublished",
+      "enum": [
+        "Published",
+        "Unpublished",
+        "Archived"
+      ]
     },
     "description": {
       "type": "text"
     },
     "mode": {
       "type": "enumeration",
-      "enum": ["Dynamic", "Select_Course", "Select_Good_Practices", "Select_Discussion"],
-      "required": true
+      "required": true,
+      "enum": [
+        "Dynamic",
+        "Select_Course",
+        "Select_Good_Practices",
+        "Select_Discussion"
+      ]
     },
     "category": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::category.category",
-      "required": true
+      "target": "api::category.category"
     },
     "menu": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::menu.menu",
-      "required": false
+      "target": "api::menu.menu"
     },
     "display_order": {
       "type": "integer"
@@ -1164,7 +1304,10 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
           ]
         }
       },
-      "enum": ["CreatedOn", "UpdatedOn"]
+      "enum": [
+        "CreatedOn",
+        "UpdatedOn"
+      ]
     },
     "sort_order": {
       "type": "enumeration",
@@ -1178,11 +1321,15 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
           ]
         }
       },
-      "enum": ["ASC", "DESC"]
+      "enum": [
+        "ASC",
+        "DESC"
+      ]
     },
     "trending_courses": {
-      "type": "customField",
-      "customField": "plugin::api-select.api-select",
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::course.course",
       "conditions": {
         "visible": {
           "==": [
@@ -1193,20 +1340,12 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
           ]
         }
       },
-      "options": {
-        "optionLabelKey": "name",
-        "optionValueKey": "identifier",
-        "selectMode": "multiple",
-        "authMode": "public",
-        "httpMethod": "POST",
-        "optionsApi": "https://devnulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
-        "requestPayload": "{\n    \"request\": {\n        \"filters\": {\n            \"status\": [\n                \"Live\"\n            ],\n            \"primaryCategory\": [\n                \"Course\"\n            ],\n            \"visibility\": []\n        },\n        \"limit\": 50,\n        \"sort_by\": {\n            \"lastPublishedOn\": \"desc\"\n        },\n        \"fields\": [\n            \"name\",\n            \"identifier\",\n            \"primaryCategory\",\n            \"status\",\n            \"lastUpdatedAt\",\n            \"lastPublishedOn\"\n        ],\n        \"facets\": [\n            \"channel\",\n            \"gradeLevel\",\n            \"subject\",\n            \"medium\"\n        ],\n        \"offset\": 0\n    }\n}",
-        "responseDataPath": "result.content"
-      }
+      "inversedBy": "sliders"
     },
-      "trending_good_practices": {
-      "type": "customField",
-      "customField": "plugin::api-select.api-select",
+    "trending_good_practices": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::good-practice.good-practice",
       "conditions": {
         "visible": {
           "==": [
@@ -1217,21 +1356,13 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
           ]
         }
       },
-      "options": {
-        "optionLabelKey": "name",
-        "optionValueKey": "identifier",
-        "selectMode": "multiple",
-        "authMode": "public",
-        "httpMethod": "POST",
-        "optionsApi": "https://devnulp.niua.org/api/content/v1/search?orgdetails=orgName,email&licenseDetails=name,description,url",
-        "requestPayload": "{\n    \"request\": {\n        \"filters\": {\n            \"status\": [\n                \"Live\"\n            ],\n            \"primaryCategory\": [\n                \"Good Practices\"\n            ],\n            \"visibility\": []\n        },\n        \"limit\": 50,\n        \"sort_by\": {\n            \"lastPublishedOn\": \"desc\"\n        },\n        \"fields\": [\n            \"name\",\n            \"identifier\",\n            \"primaryCategory\",\n            \"status\",\n            \"lastUpdatedAt\",\n            \"lastPublishedOn\"\n        ],\n        \"facets\": [\n            \"channel\",\n            \"gradeLevel\",\n            \"subject\",\n            \"medium\"\n        ],\n        \"offset\": 0\n    }\n}",
-        "responseDataPath": "result.content"
-      }
+      "mappedBy": "sliders"
     },
     "trending_discussions": {
-      "type": "customField",
-      "customField": "plugin::api-select.api-select",
-       "conditions": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::discussion.discussion",
+      "conditions": {
         "visible": {
           "==": [
             {
@@ -1241,14 +1372,7 @@ cat > src/api/slider/content-types/slider/schema.json << 'EOF'
           ]
         }
       },
-      "options": {
-        "optionLabelKey": "title",
-        "optionValueKey": "slug",
-        "selectMode": "multiple",
-        "authMode": "public",
-        "optionsApi": "https://devnulp.niua.org/discussion-forum/api/popular",
-         "responseDataPath": "topics"
-      }
+      "mappedBy": "sliders"
     }
   }
 }
@@ -1600,6 +1724,99 @@ import { factories } from '@strapi/strapi';
 export default factories.createCoreService('api::slider.slider');
 EOF
 
+# 12. Course API files
+cat > src/api/course/controllers/course.ts << 'EOF'
+/**
+ * course controller
+ */
+
+import { factories } from '@strapi/strapi'
+
+export default factories.createCoreController('api::course.course');
+EOF
+
+cat > src/api/course/routes/course.ts << 'EOF'
+/**
+ * course router
+ */
+
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreRouter('api::course.course');
+EOF
+
+cat > src/api/course/services/course.ts << 'EOF'
+/**
+ * course service
+ */
+
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreService('api::course.course');
+EOF
+
+# 13. Discussion API files
+cat > src/api/discussion/controllers/discussion.ts << 'EOF'
+/**
+ * discussion controller
+ */
+
+import { factories } from '@strapi/strapi'
+
+export default factories.createCoreController('api::discussion.discussion');
+EOF
+
+cat > src/api/discussion/routes/discussion.ts << 'EOF'
+/**
+ * discussion router
+ */
+
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreRouter('api::discussion.discussion');
+EOF
+
+cat > src/api/discussion/services/discussion.ts << 'EOF'
+/**
+ * discussion service
+ */
+
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreService('api::discussion.discussion');
+EOF
+
+# 14. Good Practice API files
+cat > src/api/good-practice/controllers/good-practice.ts << 'EOF'
+/**
+ * good-practice controller
+ */
+
+import { factories } from '@strapi/strapi'
+
+export default factories.createCoreController('api::good-practice.good-practice');
+EOF
+
+cat > src/api/good-practice/routes/good-practice.ts << 'EOF'
+/**
+ * good-practice router
+ */
+
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreRouter('api::good-practice.good-practice');
+EOF
+
+cat > src/api/good-practice/services/good-practice.ts << 'EOF'
+/**
+ * good-practice service
+ */
+
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreService('api::good-practice.good-practice');
+EOF
+
 echo "✅ All controllers, routes, and services created"
 
 # Generate TypeScript types for all collections and components
@@ -1623,7 +1840,10 @@ echo "  7. Testimonial (testimonials) - User testimonials"
 echo "  8. Partner (partners) - Business partner management"
 echo "  9. Contact Us (contact_us) - Contact information"
 echo "  10. Social Media (social_media) - Social platform links"
-echo "  11. Slider (sliders) - Dynamic content slider configuration"
+echo "  11. Course (courses) - Course management with status tracking"
+echo "  12. Discussion (discussions) - Discussion forum integration"
+echo "  13. Good Practice (good_practices) - Best practices management"
+echo "  14. Slider (sliders) - Dynamic content slider configuration"
 echo ""
 echo "🔧 Created Components:"
 echo "  • common.content-id - Content ID component for sliders"
@@ -1664,7 +1884,7 @@ echo "./create-collections.sh"
 echo "```"
 echo ""
 echo "**What this script does:**"
-echo "- Creates all 11 collection types with complete API structure"
+echo "- Creates all 14 collection types with complete API structure"
 echo "- Creates 1 reusable component (content-id for sliders)"
 echo "- Sets up proper directory structure (controllers, routes, services)"
 echo "- Generates all schema.json files with correct relationships"
@@ -1688,6 +1908,9 @@ echo "7. **Testimonial** - User testimonials"
 echo "8. **Partner** - Business partner management"
 echo "9. **Contact Us** - Contact information"
 echo "10. **Social Media** - Social platform links"
-echo "11. **Slider** - Dynamic content slider configuration"
+echo "11. **Course** - Course management with status tracking"
+echo "12. **Discussion** - Discussion forum integration"
+echo "13. **Good Practice** - Best practices management"
+echo "14. **Slider** - Dynamic content slider configuration"
 echo ""
 echo "The script is production-ready and includes all the features we discussed! 🎉"
