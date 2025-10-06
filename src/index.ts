@@ -60,16 +60,24 @@ export default {
           return;
         }
 
+        // Get all existing courses from Strapi database
+        const existingCourses = await strapi.db.query('api::course.course').findMany({
+          select: ['id', 'identifier', 'name']
+        });
+
+        // Create a map of API course identifiers for quick lookup
+        const apiCourseIdentifiers = new Set(courses.map(course => course.identifier));
+
         let syncedCount = 0;
         let skippedCount = 0;
         let updatedCount = 0;
+        let deletedCount = 0;
 
+        // Process courses from API
         for (const course of courses) {
           try {
             // Check if course already exists
-            const existingCourse = await strapi.db.query('api::course.course').findOne({
-              where: { identifier: course.identifier }
-            });
+            const existingCourse = existingCourses.find(c => c.identifier === course.identifier);
 
             if (!existingCourse) {
               // Create new course
@@ -107,11 +115,26 @@ export default {
           }
         }
 
+        // Handle deletions - remove courses that are no longer in the API
+        for (const existingCourse of existingCourses) {
+          if (!apiCourseIdentifiers.has(existingCourse.identifier)) {
+            try {
+              await strapi.entityService.delete('api::course.course', existingCourse.id);
+              deletedCount++;
+              strapi.log.info(`🗑️ Deleted course: ${existingCourse.name} (${existingCourse.identifier})`);
+            } catch (error) {
+              strapi.log.error(`❌ Error deleting course ${existingCourse.name}:`, error);
+            }
+          }
+        }
+
         strapi.log.info(`🎉 Course synchronization completed!`);
         strapi.log.info(`   - New courses created: ${syncedCount}`);
         strapi.log.info(`   - Existing courses updated: ${updatedCount}`);
         strapi.log.info(`   - Existing courses skipped: ${skippedCount}`);
+        strapi.log.info(`   - Courses deleted: ${deletedCount}`);
         strapi.log.info(`   - Total courses processed: ${courses.length}`);
+        strapi.log.info(`   - Total courses in database after sync: ${existingCourses.length - deletedCount + syncedCount}`);
 
       } catch (error) {
         strapi.log.error('❌ Error fetching courses from API:', error.message);
@@ -156,16 +179,24 @@ export default {
           return;
         }
 
+        // Get all existing good practices from Strapi database
+        const existingGoodPractices = await strapi.db.query('api::good-practice.good-practice').findMany({
+          select: ['id', 'identifier', 'name']
+        });
+
+        // Create a map of API good practice identifiers for quick lookup
+        const apiGoodPracticeIdentifiers = new Set(goodPractices.map(gp => gp.identifier));
+
         let syncedCount = 0;
         let skippedCount = 0;
         let updatedCount = 0;
+        let deletedCount = 0;
 
+        // Process good practices from API
         for (const goodPractice of goodPractices) {
           try {
             // Check if good practice already exists
-            const existingGoodPractice = await strapi.db.query('api::good-practice.good-practice').findOne({
-              where: { identifier: goodPractice.identifier }
-            });
+            const existingGoodPractice = existingGoodPractices.find(gp => gp.identifier === goodPractice.identifier);
 
             if (!existingGoodPractice) {
               // Create new good practice
@@ -203,11 +234,26 @@ export default {
           }
         }
 
+        // Handle deletions - remove good practices that are no longer in the API
+        for (const existingGoodPractice of existingGoodPractices) {
+          if (!apiGoodPracticeIdentifiers.has(existingGoodPractice.identifier)) {
+            try {
+              await strapi.entityService.delete('api::good-practice.good-practice', existingGoodPractice.id);
+              deletedCount++;
+              strapi.log.info(`🗑️ Deleted good practice: ${existingGoodPractice.name} (${existingGoodPractice.identifier})`);
+            } catch (error) {
+              strapi.log.error(`❌ Error deleting good practice ${existingGoodPractice.name}:`, error);
+            }
+          }
+        }
+
         strapi.log.info(`🎉 Good practice synchronization completed!`);
         strapi.log.info(`   - New good practices created: ${syncedCount}`);
         strapi.log.info(`   - Existing good practices updated: ${updatedCount}`);
         strapi.log.info(`   - Existing good practices skipped: ${skippedCount}`);
+        strapi.log.info(`   - Good practices deleted: ${deletedCount}`);
         strapi.log.info(`   - Total good practices processed: ${goodPractices.length}`);
+        strapi.log.info(`   - Total good practices in database after sync: ${existingGoodPractices.length - deletedCount + syncedCount}`);
 
       } catch (error) {
         strapi.log.error('❌ Error fetching good practices from API:', error.message);
@@ -256,10 +302,28 @@ export default {
           return;
         }
 
+        // Get all existing discussions from Strapi database
+        const existingDiscussions = await strapi.db.query('api::discussion.discussion').findMany({
+          select: ['id', 'tid', 'slug', 'title']
+        });
+
+        // Create a map of API discussion identifiers for quick lookup (using tid as primary key)
+        const apiDiscussionIdentifiers = new Set();
+        discussions.forEach(discussion => {
+          if (discussion.tid) {
+            apiDiscussionIdentifiers.add(discussion.tid);
+          }
+          if (discussion.slug) {
+            apiDiscussionIdentifiers.add(discussion.slug);
+          }
+        });
+
         let syncedCount = 0;
         let skippedCount = 0;
         let updatedCount = 0;
+        let deletedCount = 0;
 
+        // Process discussions from API
         for (const discussion of discussions) {
           try {
             // Extract discussion data from the API response structure
@@ -268,14 +332,9 @@ export default {
             const tid = discussion.tid || null;
 
             // Check if discussion already exists by tid or slug
-            const existingDiscussion = await strapi.db.query('api::discussion.discussion').findOne({
-              where: {
-                $or: [
-                  { tid: tid },
-                  { slug: slug }
-                ]
-              }
-            });
+            const existingDiscussion = existingDiscussions.find(d => 
+              (tid && d.tid === tid) || (slug && d.slug === slug)
+            );
 
             if (!existingDiscussion) {
               // Create new discussion
@@ -312,11 +371,29 @@ export default {
           }
         }
 
+        // Handle deletions - remove discussions that are no longer in the API
+        for (const existingDiscussion of existingDiscussions) {
+          const isInApi = (existingDiscussion.tid && apiDiscussionIdentifiers.has(existingDiscussion.tid)) ||
+                         (existingDiscussion.slug && apiDiscussionIdentifiers.has(existingDiscussion.slug));
+          
+          if (!isInApi) {
+            try {
+              await strapi.entityService.delete('api::discussion.discussion', existingDiscussion.id);
+              deletedCount++;
+              strapi.log.info(`🗑️ Deleted discussion: ${existingDiscussion.title} (${existingDiscussion.tid || existingDiscussion.slug})`);
+            } catch (error) {
+              strapi.log.error(`❌ Error deleting discussion ${existingDiscussion.title}:`, error);
+            }
+          }
+        }
+
         strapi.log.info(`🎉 Discussion synchronization completed!`);
         strapi.log.info(`   - New discussions created: ${syncedCount}`);
         strapi.log.info(`   - Existing discussions updated: ${updatedCount}`);
         strapi.log.info(`   - Existing discussions skipped: ${skippedCount}`);
+        strapi.log.info(`   - Discussions deleted: ${deletedCount}`);
         strapi.log.info(`   - Total discussions processed: ${discussions.length}`);
+        strapi.log.info(`   - Total discussions in database after sync: ${existingDiscussions.length - deletedCount + syncedCount}`);
 
       } catch (error) {
         strapi.log.error('❌ Error fetching discussions from API:', error.message);
