@@ -1,4 +1,5 @@
 import axios from 'axios';
+import cron from 'node-cron';
 
 /**
  * Environment Variables Required:
@@ -404,13 +405,57 @@ export default {
       }
     };
 
-    // Run course synchronization
+    // Run initial synchronization on startup
+    strapi.log.info('🚀 Running initial synchronization...');
     await syncCourses();
-
-    // Run good practice synchronization
     await syncGoodPractices();
-
-    // Run discussion synchronization
     await syncDiscussions();
+
+    // Set up hourly cron jobs for synchronization
+    strapi.log.info('⏰ Setting up hourly synchronization cron jobs...');
+    
+    // Course synchronization - runs every hour at minute 0
+    cron.schedule('0 * * * *', async () => {
+      strapi.log.info('🔄 [CRON] Starting hourly course synchronization...');
+      try {
+        await syncCourses();
+        strapi.log.info('✅ [CRON] Course synchronization completed successfully');
+      } catch (error) {
+        strapi.log.error('❌ [CRON] Course synchronization failed:', error);
+      }
+    }, {
+      timezone: "UTC"
+    });
+
+    // Good Practice synchronization - runs every hour at minute 5
+    cron.schedule('5 * * * *', async () => {
+      strapi.log.info('🔄 [CRON] Starting hourly good practice synchronization...');
+      try {
+        await syncGoodPractices();
+        strapi.log.info('✅ [CRON] Good practice synchronization completed successfully');
+      } catch (error) {
+        strapi.log.error('❌ [CRON] Good practice synchronization failed:', error);
+      }
+    }, {
+      timezone: "UTC"
+    });
+
+    // Discussion synchronization - runs every hour at minute 10
+    cron.schedule('10 * * * *', async () => {
+      strapi.log.info('🔄 [CRON] Starting hourly discussion synchronization...');
+      try {
+        await syncDiscussions();
+        strapi.log.info('✅ [CRON] Discussion synchronization completed successfully');
+      } catch (error) {
+        strapi.log.error('❌ [CRON] Discussion synchronization failed:', error);
+      }
+    }, {
+      timezone: "UTC"
+    });
+
+    strapi.log.info('✅ All cron jobs scheduled successfully!');
+    strapi.log.info('   - Course sync: Every hour at :00 minutes');
+    strapi.log.info('   - Good Practice sync: Every hour at :05 minutes');
+    strapi.log.info('   - Discussion sync: Every hour at :10 minutes');
   },
 };
